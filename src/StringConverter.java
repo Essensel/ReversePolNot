@@ -1,3 +1,5 @@
+import com.sun.xml.internal.ws.api.model.wsdl.WSDLOutput;
+
 import java.util.Stack;
 
 public class StringConverter {
@@ -7,6 +9,15 @@ public class StringConverter {
     private int tokenPriority;
     private Stack<String> stack = new Stack<>();
     private String resultExpretion = "";
+
+    protected String getCorrectRPNexpretion(String expretion) {
+        String corectExpretion;
+if(expretion.charAt(0)=='-'){
+
+}
+
+        return "";
+    }
 
     protected String[] getTokensArray(String enteredExpr) {
         char curentChar;
@@ -111,11 +122,13 @@ public class StringConverter {
         return resultExpretion;
     }
 
+
     protected double getResultFromRPN(String textRPN) {
+        double result = 0;
         Calculator calculator = new Calculator();
         String[] tokenRpn = textRPN.split(" ");
         Stack<String> resultStack = new Stack<>();
-        double result = -999999999;
+
         for (int i = 0; i < tokenRpn.length; i++) {
             // Если на вход подан операнд, он помещается на вершину стека
             if (getPriorityOfElement(tokenRpn[i]) == -1) {
@@ -124,11 +137,15 @@ public class StringConverter {
                 // извлечённых из стека, взятых в порядке добавления. Результат выполненной операции кладётся на вершину стека
             }
             if (getPriorityOfElement(tokenRpn[i]) > 1) {
-                double first = Double.parseDouble(resultStack.pop());
-                double second = Double.parseDouble(resultStack.pop());
 
-                result = calculator.getResult(first, second, tokenRpn[i]);
-                resultStack.push(Double.toString(result));
+                try {
+                    double second = Double.parseDouble(resultStack.pop());
+                    double first = Double.parseDouble(resultStack.pop());
+                    result = calculator.getResult(first, second, tokenRpn[i]);
+                    resultStack.push(Double.toString(result));
+                } catch (Exception e) {
+                    System.out.println("что то пошло не так!");
+                }
             }
         }
         return result;
