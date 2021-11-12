@@ -10,21 +10,35 @@ public class StringConverter {
     private Stack<String> stack = new Stack<>();
     private String resultExpretion = "";
 
-    protected String getCorrectRPNexpretion(String expretion) {
-        String corectExpretion;
-if(expretion.charAt(0)=='-'){
-
-}
-
-        return "";
+    /**
+     * метод добавляет знак "0" в выражени между операциями
+     * для осуществления вычислений с отрицательными значениями
+     * @param expretion изначальное выражение
+     * @return corectExpr
+     */
+   private String getCorrectExpretion(String expretion) {
+        String corectExpr = "";
+        for (int i = 0; i < expretion.length(); i++) {
+            char curentChar = expretion.charAt(i);
+            if (curentChar == '-') {
+                if (i == 0) {
+                    corectExpr += "0";
+                }
+                else if ((expretion.charAt(i - 1) == '(')) {
+                    corectExpr += "0";
+                }
+            }
+            corectExpr += curentChar;
+        }
+        return corectExpr;
     }
 
-    protected String[] getTokensArray(String enteredExpr) {
+    private String[] getTokensArray(String corectExpretion) {
         char curentChar;
         String token = "";
         // для разделения строки на токены вставляем пробелы в исходную строку, разделяя операнды и знаки операций.
-        for (int i = 0; i < enteredExpr.length(); i++) {
-            curentChar = enteredExpr.charAt(i);
+        for (int i = 0; i < corectExpretion.length(); i++) {
+            curentChar = corectExpretion.charAt(i);
             if ((curentChar == '(') || (curentChar == ')') || (curentChar == '*') || (curentChar == '/') || (curentChar == '+') || (curentChar == '-')) {
                 token += " " + curentChar + " ";
             } else token += curentChar;
@@ -54,7 +68,7 @@ if(expretion.charAt(0)=='-'){
         return tokensArray;
     }
 
-    protected int getPriorityOfElement(String element) {
+  private int getPriorityOfElement(String element) {
         switch (element) {
             case "*":
             case "/":
@@ -76,7 +90,7 @@ if(expretion.charAt(0)=='-'){
         return index;
     }
 
-    protected String getRevPoNot(String[] tokens) {
+    private String getRevPoNot(String[] tokens) {
 
         for (int i = 0; i < tokens.length; i++) {
             curentToken = tokens[i];
@@ -123,7 +137,7 @@ if(expretion.charAt(0)=='-'){
     }
 
 
-    protected double getResultFromRPN(String textRPN) {
+    private double getResultFromRPN(String textRPN) {
         double result = 0;
         Calculator calculator = new Calculator();
         String[] tokenRpn = textRPN.split(" ");
@@ -148,6 +162,10 @@ if(expretion.charAt(0)=='-'){
                 }
             }
         }
+        return result;
+    }
+    protected double getResult(StringConverter stringConverter, String expretion){
+    double result =  stringConverter.getResultFromRPN(stringConverter.getRevPoNot(stringConverter.getTokensArray(stringConverter.getCorrectExpretion(expretion))));
         return result;
     }
 
